@@ -17,5 +17,10 @@ if __name__ == '__main__':
 
     chain = prompt | model | output_parser
 
-    result = chain.invoke({"topic": "지구 자전"})
-    print("invoke 결과:", result)
+    #result = chain.invoke({"topic": "지구 자전"})
+    #print("invoke 결과:", result)
+
+    topics = ["지구 공전", "화산 활동", "대륙 이동"]
+    results = chain.batch([{"topic": topic} for topic in topics])
+    for topic, result in zip(topics, results):
+        print(f"{topic} 설명: {result[:50]}...")
