@@ -16,6 +16,12 @@ if __name__ == '__main__':
 
     prompt_template = createPrompt(template_text)
 
-    filled_prompt = prompt_template.format(name="홍길동", age=30)
+    combined_prompt = (
+        prompt_template
+        + createPrompt("\n\n아버지를 아버지라 부를 수 없습니다.")
+        + "\n\n{language}로 번역해주세요."
+    )
+
+    filled_prompt = combined_prompt.format(name="홍길동", age=30, language="영어")
 
     print(filled_prompt)
