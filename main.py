@@ -20,7 +20,13 @@ if __name__ == '__main__':
     #result = chain.invoke({"topic": "지구 자전"})
     #print("invoke 결과:", result)
 
-    topics = ["지구 공전", "화산 활동", "대륙 이동"]
-    results = chain.batch([{"topic": topic} for topic in topics])
-    for topic, result in zip(topics, results):
-        print(f"{topic} 설명: {result[:50]}...")
+    #topics = ["지구 공전", "화산 활동", "대륙 이동"]
+    #results = chain.batch([{"topic": topic} for topic in topics])
+    #for topic, result in zip(topics, results):
+    #    print(f"{topic} 설명: {result[:50]}...")
+
+    stream = chain.stream({"topic": "지진"})
+    print("stream 결과:")
+    for chunk in stream:
+        print(chunk, end="", flush=True)
+    print()
