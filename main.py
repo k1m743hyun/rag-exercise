@@ -16,6 +16,15 @@ if __name__ == '__main__':
     prompt1 = createPrompt("translates {korean_word} to English")
     prompt2 = createPrompt("explain {english_word} using oxford dictionary to me in Korean")
 
-    chain = prompt1 | llm | StrOutputParser()
+    chain1 = prompt1 | llm | StrOutputParser()
 
-    print(chain.invoke({"korean_word": "미래"}))
+    #print(chain1.invoke({"korean_word": "미래"}))
+
+    chain2 = (
+        {"english_word": chain1}
+        | prompt2
+        | llm
+        | StrOutputParser()
+    )
+
+    print(chain2.invoke({"korean_word": "미래"}))
