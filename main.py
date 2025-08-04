@@ -6,17 +6,16 @@ from langchain_core.output_parsers import StrOutputParser
 os.environ['OPENAI_API_KEY'] = ''
 
 
-def createPrompt():
-    return ChatPromptTemplate.from_template(
-        "You are an expert in astronomy. Answer the question. <Question>: {input}"
-    )
+def createPrompt(command):
+    return ChatPromptTemplate.from_template(command)
 
 
 if __name__ == '__main__':
     llm = ChatOpenAI(model="gpt-4o-mini")
 
-    #print(llm.invoke("지구의 자전 주기는?"))
+    prompt1 = createPrompt("translates {korean_word} to English")
+    prompt2 = createPrompt("explain {english_word} using oxford dictionary to me in Korean")
 
-    chain = createPrompt() | llm | StrOutputParser()
+    chain = prompt1 | llm | StrOutputParser()
 
-    print(chain.invoke({"input": "지구의 자전 주기는?"}))
+    print(chain.invoke({"korean_word": "미래"}))
