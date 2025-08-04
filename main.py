@@ -12,28 +12,10 @@ def createPrompt(command):
 
 
 if __name__ == '__main__':
-    model = ChatOpenAI(model="gpt-4o-mini")
-    prompt = createPrompt("지구과학에서 {topic}에 대해 간단히 설명해주세요.")
-    output_parser = StrOutputParser()
+    template_text = "안녕하세요, 제 이름은 {name}이고, 나이는 {age}살 입니다."
 
-    chain = prompt | model | output_parser
+    prompt_template = createPrompt(template_text)
 
-    #result = chain.invoke({"topic": "지구 자전"})
-    #print("invoke 결과:", result)
+    filled_prompt = prompt_template.format(name="홍길동", age=30)
 
-    #topics = ["지구 공전", "화산 활동", "대륙 이동"]
-    #results = chain.batch([{"topic": topic} for topic in topics])
-    #for topic, result in zip(topics, results):
-    #    print(f"{topic} 설명: {result[:50]}...")
-
-    #stream = chain.stream({"topic": "지진"})
-    #print("stream 결과:")
-    #for chunk in stream:
-    #    print(chunk, end="", flush=True)
-    #print()
-
-    async def run_async():
-        result = await chain.ainvoke({"topic": "해류"})
-        print("ainvoke 결과:", result[:50], "...")
-
-    asyncio.run(run_async())
+    print(filled_prompt)
