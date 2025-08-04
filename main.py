@@ -11,20 +11,11 @@ def createPrompt(command):
 
 
 if __name__ == '__main__':
-    llm = ChatOpenAI(model="gpt-4o-mini")
+    model = ChatOpenAI(model="gpt-4o-mini")
+    prompt = createPrompt("지구과학에서 {topic}에 대해 간단히 설명해주세요.")
+    output_parser = StrOutputParser()
 
-    prompt1 = createPrompt("translates {korean_word} to English")
-    prompt2 = createPrompt("explain {english_word} using oxford dictionary to me in Korean")
+    chain = prompt | model | output_parser
 
-    chain1 = prompt1 | llm | StrOutputParser()
-
-    #print(chain1.invoke({"korean_word": "미래"}))
-
-    chain2 = (
-        {"english_word": chain1}
-        | prompt2
-        | llm
-        | StrOutputParser()
-    )
-
-    print(chain2.invoke({"korean_word": "미래"}))
+    result = chain.invoke({"topic": "지구 자전"})
+    print("invoke 결과:", result)
