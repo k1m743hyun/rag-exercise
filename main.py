@@ -1,4 +1,5 @@
 import os
+import asyncio
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
@@ -25,8 +26,14 @@ if __name__ == '__main__':
     #for topic, result in zip(topics, results):
     #    print(f"{topic} 설명: {result[:50]}...")
 
-    stream = chain.stream({"topic": "지진"})
-    print("stream 결과:")
-    for chunk in stream:
-        print(chunk, end="", flush=True)
-    print()
+    #stream = chain.stream({"topic": "지진"})
+    #print("stream 결과:")
+    #for chunk in stream:
+    #    print(chunk, end="", flush=True)
+    #print()
+
+    async def run_async():
+        result = await chain.ainvoke({"topic": "해류"})
+        print("ainvoke 결과:", result[:50], "...")
+
+    asyncio.run(run_async())
