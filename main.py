@@ -14,5 +14,7 @@ if __name__ == '__main__':
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     splits = text_splitter.split_documents(docs)
 
-    print(len(splits))
-    print(splits[10])
+    #print(len(splits))
+    #print(splits[10])
+    #print(splits[10].page_content)
+    print(splits[10].metadata)
