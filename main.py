@@ -1,27 +1,23 @@
 import os
-import asyncio
 from langchain_openai import ChatOpenAI
-from langchain_core.prompts import PromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 os.environ['OPENAI_API_KEY'] = ''
 
 
-def createPrompt(command):
-    return PromptTemplate.from_template(command)
+def createPrompt():
+    return ChatPromptTemplate.from_messages([
+        ("system", "이 시스템은 천문학 질문에 답변할 수 있습니다."),
+        ("user", "{user_input}")
+    ])
 
 
 if __name__ == '__main__':
-    template_text = "안녕하세요, 제 이름은 {name}이고, 나이는 {age}살 입니다."
+    chat_prompt = createPrompt()
 
-    prompt_template = createPrompt(template_text)
-
-    combined_prompt = (
-        prompt_template
-        + createPrompt("\n\n아버지를 아버지라 부를 수 없습니다.")
-        + "\n\n{language}로 번역해주세요."
-    )
+    #messages = chat_prompt.format_messages(user_input="태양계에서 가장 큰 행성은 무엇인가요?")
 
     llm = ChatOpenAI(model="gpt-4o-mini")
-    chain = combined_prompt | llm | StrOutputParser()
-    print(chain.invoke({"age": 30, "language": "영어", "name": "홍길동"}))
+    chain = chat_prompt | llm | StrOutputParser()
+    print(chain.invoke({"user_input": "태양계에서 가장 큰 행성은 무엇인가요?"}))
