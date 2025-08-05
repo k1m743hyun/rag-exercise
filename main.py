@@ -1,11 +1,11 @@
 import os
-from langchain_anthropic import ChatAnthropic
+from langchain_google_genai import ChatGoogleGenerativeAI
 
-os.environ['ANTHROPIC_API_KEY'] = ''
+os.environ['GOOGLE_API_KEY'] = ''
 
 if __name__ == '__main__':
-    model = ChatAnthropic(
-        model="claude-3-haiku-2024",
+    model = ChatGoogleGenerativeAI(
+        model="gemini-1.5-flash",
         temperature=0,
         max_tokens=200,
     )
