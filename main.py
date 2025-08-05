@@ -1,7 +1,9 @@
 import os
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
+from langchain_chroma import Chroma
 from langchain_core.prompts import ChatPromptTemplate, FewShotChatMessagePromptTemplate
-from sympy.physics.units import temperature
+from langchain_core.example_selectors import SemanticSimilarityExampleSelector
+from openai import embeddings
 
 #os.environ['OPENAI_API_KEY'] = ''
 os.environ['GOOGLE_API_KEY'] = ''
@@ -12,14 +14,6 @@ def createPromptTemplate(message):
 
 
 if __name__ == '__main__':
-
-    example_prompt = createPromptTemplate(
-        [
-            ("human", "{input}"),
-            ("ai", "{output}")
-        ]
-    )
-
     examples = [
         {
             "input": "지구의 대기 중 가장 많은 비율을 차지하는 기체는 무엇인가요?",
@@ -47,9 +41,23 @@ if __name__ == '__main__':
         }
     ]
 
+    to_vectorize = [" ".join(example.values()) for example in examples]
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    vectorstore = Chroma.from_texts(to_vectorize, embeddings, metadatas=examples)
+
+    example_selector = SemanticSimilarityExampleSelector(
+        vectorstore=vectorstore,
+        k=2
+    )
+
     few_shot_prompt = FewShotChatMessagePromptTemplate(
-        examples=examples,
-        example_prompt=example_prompt
+        example_selector=example_selector,
+        example_prompt=createPromptTemplate(
+            [
+                ("human", "{input}"),
+                ("ai", "{output}")
+            ]
+        )
     )
 
     final_prompt = createPromptTemplate(
@@ -63,5 +71,5 @@ if __name__ == '__main__':
     model = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0, max_output_tokens=200)
     chain = final_prompt | model
 
-    result = chain.invoke({"input": "지구의 자전 주기는 얼마인가요?"})
+    result = chain.invoke({"input": "태양계에서 가장 큰 행성은 무엇인가요?"})
     print(result.content)
