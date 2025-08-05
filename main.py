@@ -1,10 +1,11 @@
 import os
-from langchain_openai import OpenAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
 from langchain_core.prompts import PromptTemplate, FewShotPromptTemplate
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector
 
-os.environ['OPENAI_API_KEY'] = ''
+#os.environ['OPENAI_API_KEY'] = ''
+os.environ['GOOGLE_API_KEY'] = ''
 
 
 def createPromptTemplate():
@@ -53,7 +54,7 @@ if __name__ == '__main__':
 
     example_selector = SemanticSimilarityExampleSelector.from_examples(
         examples,
-        OpenAIEmbeddings(),
+        GoogleGenerativeAIEmbeddings(model="models/embedding-001"),
         Chroma,
         k=1
     )
