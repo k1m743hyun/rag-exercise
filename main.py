@@ -23,4 +23,11 @@ if __name__ == '__main__':
     )
 
     question = "태양계에서 가장 큰 행성은 무엇인가요?"
-    print(model.invoke(input=question))
+    #print(model.invoke(input=question))
+
+    new_params = {
+        "temperature": 0.7,
+        "max_tokens": 10,
+    }
+
+    print(model.invoke(input=question, **new_params))
