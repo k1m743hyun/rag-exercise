@@ -1,45 +1,36 @@
-import os
-from langchain_core.documents import Document
-from langchain_community.vectorstores import Chroma
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
-
-os.environ['GOOGLE_API_KEY'] = ''
+from langchain_community.document_loaders import PyMuPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_community.vectorstores.utils import DistanceStrategy
 
 if __name__ == '__main__':
-    documents = [
-        Document(
-            page_content="LangChain은 대규모 언어 모델(LLM)을 사용하는 애플리케이션을 개발하기 위한 프레임워크입니다.",
-            metadata={
-                "title": "LangChain 소개",
-                "author": "AI 개발자",
-                "url": "http://example.com/langchain-intro"
-            }
-        ),
-        Document(
-            page_content="벡터 데이터베이스는 고차원 벡터를 효율적으로 저장하고 검색하는 데 특화된 데이터베이스 시스템입니다.",
-            metadata={
-                "title": "벡터 데이터베이스 개요",
-                "author": "데이터 과학자",
-                "url": "http://example.com/vector-db-overview"
-            }
-        ),
-    ]
+    loader = PyMuPDFLoader('data/323410_카카오뱅크_2023.pdf')
+    data = loader.load()
 
-    embedding_model = GoogleGenerativeAIEmbeddings(model='models/embedding-001')
-
-    vectorstore = Chroma.from_documents(
-        documents,
-        embedding_model,
-        collection_name='esg',
-        persist_directory='./db/chromadb',
+    text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
+        chunk_size=1000,
+        chunk_overlap=200,
+        encoding_name='cl100k_base'
     )
 
-    query = 'LangChain이란 무엇인가요?'
-    results = vectorstore.similarity_search(query, k=2)
+    documents = text_splitter.split_documents(data)
 
-    for doc in results:
-        print(f"내용: {doc.page_content}")
-        print(f"제목: {doc.metadata['title']}")
-        print(f"저자: {doc.metadata['author']}")
-        print(f"URL: {doc.metadata['url']}")
-        print("---")
+    embedding_model = HuggingFaceEmbeddings(
+        model_name='jhgan/ko-sbert-nli',
+        model_kwargs={'device': 'cpu'},
+        encode_kwargs={'normalize_embeddings': True},
+    )
+
+    vectorstore = FAISS.from_documents(
+        documents,
+        embedding_model,
+        distance_strategy=DistanceStrategy.COSINE,
+    )
+    #print(vectorstore)
+    #print(vectorstore.distance_strategy)
+
+    query = '카카오뱅크가 중대성 평가를 통해 도출한 6가지 중대 주제는 무엇인가?'
+    docs = vectorstore.similarity_search(query)
+    print(len(docs))
+    print(docs[0].page_content)
