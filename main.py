@@ -1,9 +1,8 @@
-from langchain_community.document_loaders import PyMuPDFLoader
+from langchain_community.document_loaders import OnlinePDFLoader
 
 if __name__ == '__main__':
-    pdf_filepath = 'data/000660_SK_2023.pdf'
-    loader = PyMuPDFLoader(pdf_filepath)
+    url = 'https://arxiv.org/pdf/1706.03762.pdf'
+    loader = OnlinePDFLoader(url)
     pages = loader.load()
     print(len(pages))
-    print(pages[0].page_content)
-    print(pages[0].metadata)
+    print(pages[0].page_content[:1000])
