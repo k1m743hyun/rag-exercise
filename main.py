@@ -32,5 +32,9 @@ if __name__ == '__main__':
 
     query = '카카오뱅크가 중대성 평가를 통해 도출한 6가지 중대 주제는 무엇인가?'
     docs = vectorstore.similarity_search(query)
-    print(len(docs))
-    print(docs[0].page_content)
+    #print(len(docs))
+    #print(docs[0].page_content)
+
+    mmr_docs = vectorstore.max_marginal_relevance_search(query, k=4, fetch_k=10)
+    print(len(mmr_docs))
+    print(mmr_docs[0].page_content)
