@@ -1,18 +1,11 @@
-import bs4
-from langchain_community.document_loaders import WebBaseLoader
+from langchain_community.document_loaders import TextLoader
 
 if __name__ == '__main__':
-    url1 = 'https://blog.langchain.dev/customers-replit/'
-    url2 = 'https://blog.langchain.dev/langgraph-v0-2/'
+    loader = TextLoader('history.txt')
+    data = loader.load()
 
-    loader = WebBaseLoader(
-        web_paths=(url1, url2),
-        bs_kwargs=dict(
-            parse_only=bs4.SoupStrainer(
-                class_=("article-header", "article-content")
-            )
-        )
-    )
-    docs = loader.load()
-    print(len(docs))
-    print(docs[0])
+    print(type(data))
+    print(len(data))
+    print(data)
+    print(len(data[0].page_content))
+    print(data[0].metadata)
