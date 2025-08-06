@@ -1,5 +1,5 @@
 from langchain_community.document_loaders import TextLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_text_splitters import CharacterTextSplitter
 
 if __name__ == '__main__':
     loader = TextLoader('./data/history.txt')
@@ -7,13 +7,15 @@ if __name__ == '__main__':
     #print(len(data[0].page_content))
     #print(data[0].page_content)
 
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=500,
-        chunk_overlap=100,
-        length_function=len,
+    text_splitter = CharacterTextSplitter.from_tiktoken_encoder(
+        chunk_size=600,
+        chunk_overlap=200,
+        encoding_name='cl100k_base',
     )
 
-    texts = text_splitter.split_text(data[0].page_content)
-    print(len(texts))
-    print(len(texts[0]), len(texts[1]), len(texts[2]))
-    print(texts[0])
+    docs = text_splitter.split_text(data[0].page_content)
+    print(len(docs))
+
+    for i in range(len(docs)):
+        print(len(docs[i]))
+        print(docs[i])
