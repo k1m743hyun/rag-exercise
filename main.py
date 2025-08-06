@@ -1,21 +1,30 @@
-from langchain_community.document_loaders import TextLoader
-from langchain_text_splitters import CharacterTextSplitter
+from numpy import dot
+from numpy.linalg import norm
+from langchain_openai import OpenAIEmbeddings
+
+os.environ['OPENAI_API_KEY'] = ''
+
+def cos_sim(A, B):
+    return dot(A, B) / (norm(A) * norm(B))
 
 if __name__ == '__main__':
-    loader = TextLoader('./data/history.txt')
-    data = loader.load()
-    #print(len(data[0].page_content))
-    #print(data[0].page_content)
+    embedding_model = OpenAIEmbeddings()
 
-    text_splitter = CharacterTextSplitter.from_tiktoken_encoder(
-        chunk_size=600,
-        chunk_overlap=200,
-        encoding_name='cl100k_base',
+    embeddings = embedding_model.embed_documents(
+        [
+            '안녕하세요!',
+            '어! 오랜만이에요',
+            '이름이 어떻게 되세요?',
+            '날씨가 추워요',
+            'Hello LLM!'
+        ]
     )
+    #print(len(embeddings))
+    #print(len(embeddings[0]))
+    #print(embeddings[0][:20])
 
-    docs = text_splitter.split_text(data[0].page_content)
-    print(len(docs))
+    embedded_query = embedding_model.embed_query('첫인사를 하고 이름을 물어봤나요?')
+    #print(embedded_query[:5])
 
-    for i in range(len(docs)):
-        print(len(docs[i]))
-        print(docs[i])
+    for embedding in embeddings:
+        print(cos_sim(embedding, embedded_query))
