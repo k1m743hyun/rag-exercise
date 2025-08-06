@@ -27,14 +27,17 @@ if __name__ == '__main__':
         embedding_model,
         distance_strategy=DistanceStrategy.COSINE,
     )
+    vectorstore.save_local('db/faiss')
     #print(vectorstore)
     #print(vectorstore.distance_strategy)
 
+    db = FAISS.load_local('db/faiss', embedding_model, allow_dangerous_deserialization=True)
+
     query = '카카오뱅크가 중대성 평가를 통해 도출한 6가지 중대 주제는 무엇인가?'
-    docs = vectorstore.similarity_search(query)
+    #docs = db.similarity_search(query)
     #print(len(docs))
     #print(docs[0].page_content)
 
-    mmr_docs = vectorstore.max_marginal_relevance_search(query, k=4, fetch_k=10)
+    mmr_docs = db.max_marginal_relevance_search(query, k=4, fetch_k=10)
     print(len(mmr_docs))
     print(mmr_docs[0].page_content)
