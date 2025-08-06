@@ -1,8 +1,8 @@
-from langchain_community.document_loaders import OnlinePDFLoader
+from langchain_community.document_loaders import PyPDFDirectoryLoader
 
 if __name__ == '__main__':
-    url = 'https://arxiv.org/pdf/1706.03762.pdf'
-    loader = OnlinePDFLoader(url)
-    pages = loader.load()
-    print(len(pages))
-    print(pages[0].page_content[:1000])
+    loader = PyPDFDirectoryLoader('./data')
+    data = loader.load()
+    print(len(data))
+    print(data[0])
+    print(data[-1])
