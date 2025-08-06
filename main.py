@@ -1,5 +1,5 @@
 from langchain_community.document_loaders import TextLoader
-from langchain_text_splitters import CharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 if __name__ == '__main__':
     loader = TextLoader('./data/history.txt')
@@ -7,8 +7,7 @@ if __name__ == '__main__':
     #print(len(data[0].page_content))
     #print(data[0].page_content)
 
-    text_splitter = CharacterTextSplitter(
-        separator='\n',
+    text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=500,
         chunk_overlap=100,
         length_function=len,
