@@ -1,17 +1,15 @@
+import os
 from numpy import dot
 from numpy.linalg import norm
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+
+os.environ['GOOGLE_API_KEY'] = ''
 
 def cos_sim(A, B):
     return dot(A, B) / (norm(A) * norm(B))
 
 if __name__ == '__main__':
-    embedding_model = HuggingFaceEmbeddings(
-        model_name='jhgan/ko-sroberta-nli',
-        model_kwargs={'device':'cpu'},
-        encode_kwargs={'normalize_embeddings':True}
-    )
-    #print(embedding_model)
+    embedding_model = GoogleGenerativeAIEmbeddings(model='models/embedding-001')
 
     embeddings = embedding_model.embed_documents(
         [
