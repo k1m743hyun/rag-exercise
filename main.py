@@ -1,12 +1,7 @@
-import os
-from glob import glob
-from langchain_community.document_loaders import TextLoader, DirectoryLoader
+from langchain_community.document_loaders.csv_loader import CSVLoader
 
 if __name__ == '__main__':
-    files = glob(os.path.join('./', '*.txt'))
-    #print(files)
-
-    loader = DirectoryLoader(path='./', glob='*.txt', loader_cls=TextLoader)
+    loader = CSVLoader(file_path='./data/한국주택금융공사_주택금융관련_지수_20160101.csv', encoding='cp949')
     data = loader.load()
     print(len(data))
     print(data[0])
