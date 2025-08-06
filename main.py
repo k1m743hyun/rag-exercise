@@ -1,14 +1,17 @@
 from numpy import dot
 from numpy.linalg import norm
-from langchain_openai import OpenAIEmbeddings
-
-os.environ['OPENAI_API_KEY'] = ''
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 def cos_sim(A, B):
     return dot(A, B) / (norm(A) * norm(B))
 
 if __name__ == '__main__':
-    embedding_model = OpenAIEmbeddings()
+    embedding_model = HuggingFaceEmbeddings(
+        model_name='jhgan/ko-sroberta-nli',
+        model_kwargs={'device':'cpu'},
+        encode_kwargs={'normalize_embeddings':True}
+    )
+    #print(embedding_model)
 
     embeddings = embedding_model.embed_documents(
         [
@@ -21,10 +24,8 @@ if __name__ == '__main__':
     )
     #print(len(embeddings))
     #print(len(embeddings[0]))
-    #print(embeddings[0][:20])
 
     embedded_query = embedding_model.embed_query('첫인사를 하고 이름을 물어봤나요?')
-    #print(embedded_query[:5])
 
     for embedding in embeddings:
         print(cos_sim(embedding, embedded_query))
