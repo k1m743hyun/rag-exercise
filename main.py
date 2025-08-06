@@ -1,11 +1,12 @@
-from langchain_community.document_loaders import TextLoader
+import os
+from glob import glob
+from langchain_community.document_loaders import TextLoader, DirectoryLoader
 
 if __name__ == '__main__':
-    loader = TextLoader('history.txt')
-    data = loader.load()
+    files = glob(os.path.join('./', '*.txt'))
+    #print(files)
 
-    print(type(data))
+    loader = DirectoryLoader(path='./', glob='*.txt', loader_cls=TextLoader)
+    data = loader.load()
     print(len(data))
-    print(data)
-    print(len(data[0].page_content))
-    print(data[0].metadata)
+    print(data[0])
